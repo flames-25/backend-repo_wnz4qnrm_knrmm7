@@ -11,10 +11,10 @@ Model name is converted to lowercase for the collection name:
 - BlogPost -> "blogs" collection
 """
 
-from pydantic import BaseModel, Field
-from typing import Optional
+from pydantic import BaseModel, Field, EmailStr
+from typing import Optional, List, Dict
 
-# Example schemas (replace with your own):
+# Example schemas (you can keep these for reference):
 
 class User(BaseModel):
     """
@@ -38,11 +38,38 @@ class Product(BaseModel):
     category: str = Field(..., description="Product category")
     in_stock: bool = Field(True, description="Whether product is in stock")
 
-# Add your own schemas here:
-# --------------------------------------------------
+# Personal profile app schemas
 
-# Note: The Flames database viewer will automatically:
-# 1. Read these schemas from GET /schema endpoint
-# 2. Use them for document validation when creating/editing
-# 3. Handle all database operations (CRUD) directly
-# 4. You don't need to create any database endpoints!
+class Profile(BaseModel):
+    """
+    Public profile information
+    Collection name: "profile"
+    """
+    name: str = Field(..., description="Full name")
+    title: str = Field(..., description="Headline/title")
+    bio: str = Field(..., description="Short biography")
+    location: Optional[str] = Field(None, description="Location")
+    photo_url: Optional[str] = Field(None, description="Profile photo URL")
+    socials: Optional[Dict[str, str]] = Field(
+        default=None,
+        description="Map of social network to URL (e.g., linkedin, github)"
+    )
+
+class Project(BaseModel):
+    """
+    Portfolio projects
+    Collection name: "project"
+    """
+    title: str
+    description: str
+    tags: List[str] = []
+    link: Optional[str] = None
+
+class Contactmessage(BaseModel):
+    """
+    Contact messages from site visitors
+    Collection name: "contactmessage"
+    """
+    name: str
+    email: EmailStr
+    message: str
